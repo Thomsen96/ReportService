@@ -1,7 +1,4 @@
-package dtu.TokenService.Domain.Repositories;
-
-import dtu.TokenService.Domain.Entities.Token;
-import dtu.TokenService.Domain.Interfaces.ITokenRepository;
+package dtu.ReportService.Domain.Repositories;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LocalTokenRepository implements ITokenRepository {
+import dtu.ReportService.Domain.Entities.Token;
+import dtu.ReportService.Domain.Interfaces.IReportRepository;
+
+public class LocalReportRepository implements IReportRepository {
 
 	List<Token> tokens = new ArrayList<>();
 	HashMap<String, Token> tokenHashMap = new HashMap<>();

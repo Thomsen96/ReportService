@@ -7,21 +7,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import dtu.TokenService.Application.TokenService;
-import dtu.TokenService.Domain.Entities.Token;
-import dtu.TokenService.Domain.Repositories.LocalTokenRepository;
-//import dtu.TokenService.Presentation.Resources.TokenMessageService;
+import dtu.ReportService.Application.ReportService;
+import dtu.ReportService.Domain.Entities.Token;
+import dtu.ReportService.Domain.Repositories.LocalReportRepository;
+//import dtu.TokenService.Presentation.Resources.ReportMessageService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 //import messaging.MessageQueue;
 
-public class CreateTokenSteps {
+public class CreateReportSteps {
 	String customerId = null;
 	String merchantId = null;
 	//private MessageQueue messageQueue = mock(MessageQueue.class);
-	TokenService tokenService = new TokenService(new LocalTokenRepository());
-	//private TokenMessageService service = new TokenMessageService(messageQueue, tokenService);
+	ReportService reportService = new ReportService(new LocalReportRepository());
+	//private ReportMessageService service = new ReportMessageService(messageQueue, reportService);
 	HashSet<Token> tokens = new HashSet<>();
 
 	@Given("a customer with id {string}")
@@ -31,12 +31,12 @@ public class CreateTokenSteps {
 
 	@Given("the customer already has {int} tokens")
 	public void theCustomerAlreadyHasTokens(Integer numOfTokens) {
-		tokens = tokenService.createTokens(numOfTokens, customerId);
+		tokens = reportService.createTokens(numOfTokens, customerId);
 	}
 
 	@When("the customer requests {int} tokens")
 	public void theCustomerRequestsTokens(Integer numOfTokens) {
-		tokens = tokenService.createTokens(numOfTokens, customerId);
+		tokens = reportService.createTokens(numOfTokens, customerId);
 	}
 
 	@Then("the customer has {int} tokens")

@@ -6,9 +6,9 @@ import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.CompletableFuture;
 
-import dtu.TokenService.Application.TokenService;
-import dtu.TokenService.Domain.Repositories.LocalTokenRepository;
-import dtu.TokenService.Presentation.Resources.TokenMessageService;
+import dtu.ReportService.Application.ReportService;
+import dtu.ReportService.Domain.Repositories.LocalReportRepository;
+import dtu.ReportService.Presentation.Resources.ReportMessageService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -20,8 +20,8 @@ public class VerifyCustomerSteps {
 	String merchantId = null;
 
 	private MessageQueue messageQueue = mock(MessageQueue.class);
-	private TokenService tokenService = new TokenService(new LocalTokenRepository());
-	private TokenMessageService messageService = new TokenMessageService(messageQueue, tokenService);
+	private ReportService reportService = new ReportService(new LocalReportRepository());
+	private ReportMessageService messageService = new ReportMessageService(messageQueue, reportService);
 	private CompletableFuture<Boolean> customerVerified = new CompletableFuture<>();
 
 	@Given("a customer has an id {string}")

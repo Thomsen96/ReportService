@@ -1,16 +1,16 @@
-package dtu.TokenService.Presentation.Resources;
-
-import dtu.TokenService.Application.TokenService;
-import dtu.TokenService.Domain.Repositories.LocalTokenRepository;
+package dtu.ReportService.Presentation.Resources;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/tokens")
-public class TokenResource  {
+import dtu.ReportService.Application.ReportService;
+import dtu.ReportService.Domain.Repositories.LocalReportRepository;
 
-	private static TokenService service = new TokenService(new LocalTokenRepository());
+@Path("/tokens")
+public class ReportResource  {
+
+	private static ReportService service = new ReportService(new LocalReportRepository());
 
 	@POST
 	@Path("{customerId}/{numberOfTokens}")

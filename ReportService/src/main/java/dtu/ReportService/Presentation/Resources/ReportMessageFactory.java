@@ -1,14 +1,14 @@
-package dtu.TokenService.Presentation.Resources;
+package dtu.ReportService.Presentation.Resources;
 
-import dtu.TokenService.Application.TokenService;
-import dtu.TokenService.Domain.Repositories.LocalTokenRepository;
+import dtu.ReportService.Application.ReportService;
+import dtu.ReportService.Domain.Repositories.LocalReportRepository;
 import messaging.implementations.RabbitMqQueue;
 
-public class TokenMessageFactory {
+public class ReportMessageFactory {
   
-  static TokenMessageService service = null;
+  static ReportMessageService service = null;
 
-	public TokenMessageService getService() {
+	public ReportMessageService getService() {
 		// The singleton pattern.
 		// Ensure that there is at most
 		// one instance of a PaymentService
@@ -28,7 +28,7 @@ public class TokenMessageFactory {
 
 		//TODO: Check how to add busniss logic here.
 		
-		service = new TokenMessageService(messageQueue, new TokenService(new LocalTokenRepository()));
+		service = new ReportMessageService(messageQueue, new ReportService(new LocalReportRepository()));
     //new StudentRegistrationServiceAdapter(service, mq);
 		return service;
   }

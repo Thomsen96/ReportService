@@ -1,20 +1,20 @@
-package dtu.TokenService.Presentation.Resources;
+package dtu.ReportService.Presentation.Resources;
 
 import java.util.concurrent.CompletableFuture;
 
-import dtu.TokenService.Application.TokenService;
+import dtu.ReportService.Application.ReportService;
+import dtu.ReportService.Domain.Entities.Token;
 import messaging.Event;
 import messaging.MessageQueue;
-import dtu.TokenService.Domain.Entities.Token;
 
-public class TokenMessageService {
+public class ReportMessageService {
 	private MessageQueue messageQueue;
 	private CompletableFuture<Boolean> customerVerified;
-	private TokenService tokenService;
+	private ReportService reportService;
 
-	public TokenMessageService(MessageQueue messageQueue, TokenService tokenService) {
+	public ReportMessageService(MessageQueue messageQueue, ReportService reportService) {
 		this.messageQueue = messageQueue;
-		this.tokenService = tokenService;
+		this.reportService = reportService;
 		this.messageQueue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequest);
 		this.messageQueue.addHandler("CustomerVerified", this::handleCustomerVerification);
 	}
@@ -39,7 +39,7 @@ public class TokenMessageService {
 	// Handler for verification request from Payments that needs to know if the token is valid and the cid for the token.
 	public void handleTokenVerificationRequest(Event e) {
 		var tokenUuid = e.getArgument(0, String.class);
-		Token tokenObj = tokenService.getVerifiedToken(tokenUuid);
+		Token tokenObj = reportService.getVerifiedToken(tokenUuid);
 		Event event = new Event("TokenVerificationResponse", new Object[] { tokenObj });
 		messageQueue.publish(event);
 	}
