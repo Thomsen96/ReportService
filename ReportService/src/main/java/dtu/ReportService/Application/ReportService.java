@@ -1,39 +1,48 @@
 package dtu.ReportService.Application;
 
-import java.util.HashSet;
-import java.util.List;
-
-import dtu.ReportService.Domain.Entities.Token;
-import dtu.ReportService.Domain.Interfaces.IReportRepository;
+import dtu.ReportService.Domain.Payment;
+import dtu.ReportService.Infrastructure.ReportRepository;
 
 public class ReportService {
 
-	private IReportRepository reportRepository;
+	private ReportRepository reportRepository;
 
-
-
-	public ReportService(IReportRepository reportRepository) {
+	public ReportService(ReportRepository reportRepository) {
 		this.reportRepository = reportRepository;
 	}
 
-	public HashSet<Token> createTokens(Integer numOfTokens, String customerId) {
-		if(numOfTokens > 0 && numOfTokens < 6 && reportRepository.get(customerId).size() < 2) {
-			for( int i = 0; i < numOfTokens; i++) {
-				reportRepository.create(customerId);
-			}
-		}
-		return reportRepository.get(customerId);
+	public String getCustomerReport(String customerId) {
+		return reportRepository.getCustomerReport(customerId);
 	}
-
-	public HashSet<Token> getTokens(String customerId) {
-		return reportRepository.get(customerId);
+	public String getMerchantReport(String customerId) {
+		return reportRepository.getCustomerReport(customerId);
 	}
-
-	public boolean deleteTokensForCustomer(String customerId) {
-		return reportRepository.delete(customerId);
+	public String getManagerReport() {
+		return reportRepository.getManagerReport();
 	}
 	
-	public Token getVerifiedToken(String tokenUuid) {
-		return reportRepository.getVerfiedToken(tokenUuid);
+	public void put(Payment payment) {
+		reportRepository.put(payment);
 	}
+
+	//	public HashSet<Token> createTokens(Integer numOfTokens, String customerId) {
+	//		if(numOfTokens > 0 && numOfTokens < 6 && reportRepository.get(customerId).size() < 2) {
+	//			for( int i = 0; i < numOfTokens; i++) {
+	//				reportRepository.create(customerId);
+	//			}
+	//		}
+	//		return reportRepository.get(customerId);
+	//	}
+	//
+	//	public HashSet<Token> getTokens(String customerId) {
+	//		return reportRepository.get(customerId);
+	//	}
+	//
+	//	public boolean deleteTokensForCustomer(String customerId) {
+	//		return reportRepository.delete(customerId);
+	//	}
+	//	
+	//	public Token getVerifiedToken(String tokenUuid) {
+	//		return reportRepository.getVerfiedToken(tokenUuid);
+	//	}
 }

@@ -1,4 +1,4 @@
-package dtu.ReportService.Domain.Entities;
+package dtu.ReportService.Domain;
 
 import java.util.UUID;
 

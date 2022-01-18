@@ -1,7 +1,7 @@
-package dtu.ReportService.Presentation.Resources;
+package dtu.ReportService.Presentation;
 
 import dtu.ReportService.Application.ReportService;
-import dtu.ReportService.Domain.Repositories.LocalReportRepository;
+import dtu.ReportService.Infrastructure.ReportRepository;
 import messaging.implementations.RabbitMqQueue;
 
 public class ReportMessageFactory {
@@ -28,7 +28,7 @@ public class ReportMessageFactory {
 
 		//TODO: Check how to add busniss logic here.
 		
-		service = new ReportMessageService(messageQueue, new ReportService(new LocalReportRepository()));
+		service = new ReportMessageService(messageQueue, new ReportService(new ReportRepository()));
     //new StudentRegistrationServiceAdapter(service, mq);
 		return service;
   }
