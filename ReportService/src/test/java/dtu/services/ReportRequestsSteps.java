@@ -47,10 +47,11 @@ public class ReportRequestsSteps {
 		reportService.put(payment3);
 	}
 	
-	@Given("a user with id {string} has a payment in the report")
+	@Given("a user with id {string}")
 	public void aUserWithIdHasAReport(String userId) {
 		this.userId = userId;
 	}
+	
 	
 	// Customer report request scenario
 	@When("the customer requests his report with session id {string}")
@@ -60,7 +61,6 @@ public class ReportRequestsSteps {
 		Event reportRequestEvent = new Event("CustomerReportRequest", new Object[] {eventResponse});
 		reportEventHandler.handleCustomerReportRequest(reportRequestEvent);
 	}
-	
 	@Then("the customer report is put on the messagequeue")
 	public void theCustomerReportIsPutOnTheMessagequeue() {
 		var report = reportService.getCustomerReport(userId);
@@ -69,6 +69,27 @@ public class ReportRequestsSteps {
 		Event actualResponseEvent = messageQueue.getEvent("CustomerReportResponse." + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}
+
+
+//	@When("the customer requests his report with session id {string} without a payment in the log")
+//	public void theCustomerRequestsHisReportWithSessionIdWithoutAPaymentInTheLog(String sessionId) {
+//		this.sessionId = sessionId;
+//		EventResponse eventResponse = new EventResponse(sessionId, true, null, userId);
+//		Event reportRequestEvent = new Event("CustomerReportRequest", new Object[] {eventResponse});
+//		reportEventHandler.handleCustomerReportRequest(reportRequestEvent);
+//	}
+
+
+	@Then("an error message {string} is put on the messagequeue")
+	public void anErrorMessageIsPutOnTheMessagequeue(String expectedErrorMsg) {
+		EventResponse eventResponse = new EventResponse(sessionId, false, expectedErrorMsg);
+		Event expectedResponseEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });
+		System.out.println("Expected:\t" + expectedResponseEvent);
+		Event actualResponseEvent = messageQueue.getEvent("CustomerReportResponse." + sessionId);
+		System.out.println("Actual:\t\t" + actualResponseEvent);
+		assertEquals(expectedResponseEvent, actualResponseEvent);
+	}	
+	
 	
 	
 	// Merchant report request scenario
@@ -79,7 +100,6 @@ public class ReportRequestsSteps {
 		Event reportRequestEvent = new Event("MerchantReportRequest", new Object[] {eventResponse});
 		reportEventHandler.handleMerchantReportRequest(reportRequestEvent);
 	}
-
 	@Then("the merchant report is put on the messagequeue")
 	public void theMerchantReportIsPutOnTheMessagequeue() {
 		var report = reportService.getMerchantReport(userId);
@@ -99,7 +119,6 @@ public class ReportRequestsSteps {
 		Event reportRequestEvent = new Event("ManagerReportRequest", new Object[] {eventResponse});
 		reportEventHandler.handleManagerReportRequest(reportRequestEvent);
 	}
-
 	@Then("the manager report is put on the messagequeue")
 	public void theManagerReportIsPutOnTheMessagequeue() {
 		var report = reportService.getManagerReport();

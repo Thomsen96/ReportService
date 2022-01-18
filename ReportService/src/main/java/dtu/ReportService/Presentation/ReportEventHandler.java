@@ -32,7 +32,15 @@ public class ReportEventHandler {
 		var customerId = eventArguments.getArgument(0, String.class);
 		
 		var report = reportService.getCustomerReport(customerId);
-		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
+		EventResponse eventResponse;
+		if(report != null) {
+			eventResponse = new EventResponse(sessionId, true, null, report);
+		}
+		else {
+			String errorMsg = "There are no logged payments for user: " + customerId;
+			System.out.println(errorMsg);
+			eventResponse = new EventResponse(sessionId, false, errorMsg);
+		}
 		Event outgoingEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });
 		messageQueue.publish(outgoingEvent);
 	}
