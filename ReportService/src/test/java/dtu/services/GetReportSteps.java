@@ -1,5 +1,7 @@
 package dtu.services;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashSet;
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
@@ -9,12 +11,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-public class CreateReportSteps {
+public class GetReportSteps {
 	ReportService reportService = new ReportService(new ReportRepository());
 	HashSet<Payment> report;
 	HashSet<PaymentMerchant> merchantReport;
 	String customer1, customer2, customer3, merchant1, merchant2, merchant3, token1, token2, token3, amount1, amount2, amount3;
-
+	Payment payment1, payment2, payment3;
+	
 	@Given("a report exists")
 	public void aReportExists() {
 		customer1 = "customerId1";
@@ -29,9 +32,9 @@ public class CreateReportSteps {
 		amount1 = "300";
 		amount2 = "200";
 		amount3 = "50";
-		Payment payment1 = new Payment(customer1, merchant1, token1, amount1);
-		Payment payment2 = new Payment(customer1, merchant2, token2, amount2);
-		Payment payment3 = new Payment(customer2, merchant1, token3, amount3);
+		payment1 = new Payment(customer1, merchant1, token1, amount1);
+		payment2 = new Payment(customer1, merchant2, token2, amount2);
+		payment3 = new Payment(customer2, merchant1, token3, amount3);
 		reportService.put(payment1);
 		reportService.put(payment2);
 		reportService.put(payment3);
@@ -42,11 +45,6 @@ public class CreateReportSteps {
 		report = reportService.getManagerReport();
 	}
 
-	@When("a merchant with id {string} requests a full report")
-	public void aMerchantWithIdRequestsAFullReport(String merchantId) {
-		merchantReport = reportService.getMerchantReport(merchantId);
-	}
-
 	@When("a customer with id {string} requests a full report")
 	public void aCustomerWithIdRequestsAFullReport(String customerId) {
 		report = reportService.getCustomerReport(customerId);
@@ -54,6 +52,19 @@ public class CreateReportSteps {
 	
 	@Then("the entire report is returned")
 	public void theEntireReportIsReturned() {
+		assertTrue(report.contains(payment1));
+	}
+	
+	
+	@When("a merchant with id {string} requests a full report")
+	public void aMerchantWithIdRequestsAFullReport(String merchantId) {
+		merchantReport = reportService.getMerchantReport(merchantId);
+	}
+
+	@Then("the entire merchant report is returned")
+	public void theEntireMerchantReportIsReturned() {
+		PaymentMerchant merchantPayment = new PaymentMerchant(payment1);
+		assertTrue(merchantReport.contains(merchantPayment));
 	}
 
 }

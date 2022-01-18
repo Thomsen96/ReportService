@@ -11,7 +11,6 @@ import dtu.ReportService.Infrastructure.ReportRepository;
 public class ReportService {
 
 	private ReportRepository reportRepository;
-	Gson gson = new Gson(); 
 
 	public ReportService(ReportRepository reportRepository) {
 		this.reportRepository = reportRepository;

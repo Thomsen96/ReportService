@@ -56,8 +56,8 @@ public class ReportRepository {
 		}
 		
 		PaymentMerchant merchantPayment = new PaymentMerchant(payment);
-		if (merchantReport.containsKey(payment.getMerchantId())) {
-			merchantReport.get(payment.getMerchantId()).add(merchantPayment);
+		if (merchantReport.containsKey(merchantPayment.getMerchantId())) {
+			merchantReport.get(merchantPayment.getMerchantId()).add(merchantPayment);
 		}
 		else {
 			var paymentSet = new HashSet<PaymentMerchant>();
