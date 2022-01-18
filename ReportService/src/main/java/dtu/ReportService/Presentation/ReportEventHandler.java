@@ -1,6 +1,7 @@
 package dtu.ReportService.Presentation;
 
 import dtu.ReportService.Application.ReportService;
+import dtu.ReportService.Domain.Payment;
 import messaging.Event;
 import messaging.MessageQueue;
 
@@ -14,6 +15,13 @@ public class ReportEventHandler {
 		this.messageQueue.addHandler("CustomerReportRequest", this::handleCustomerReportRequest);
 		this.messageQueue.addHandler("MerchantReportRequest", this::handleMerchantReportRequest);
 		this.messageQueue.addHandler("ManagerReportRequest", this::handleManagerReportRequest);
+		this.messageQueue.addHandler("LogPaymentRequest", this::handleLogPaymentRequest);
+	}
+	
+	// Handler for verification request from Payments that needs to know if the token is valid and the cid for the token.
+	public void handleLogPaymentRequest(Event e) {
+		var payment = e.getArgument(0, Payment.class);
+		reportService.put(payment);
 	}
 	
 	// Handler for verification request from Payments that needs to know if the token is valid and the cid for the token.
