@@ -12,6 +12,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messaging.Event;
+import messaging.EventResponse;
 import messaging.implementations.MockMessageQueue;
 
 public class ReportRequestsSteps {
@@ -55,14 +56,16 @@ public class ReportRequestsSteps {
 	@When("the customer requests his report with session id {string}")
 	public void theCustomerRequestsHisReportWithSessionId(String sessionId) {
 		this.sessionId = sessionId;
-		Event reportRequestEvent = new Event("CustomerReportRequest", new Object[] {sessionId, userId});
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, userId);
+		Event reportRequestEvent = new Event("CustomerReportRequest", new Object[] {eventResponse});
 		reportEventHandler.handleCustomerReportRequest(reportRequestEvent);
 	}
 	
 	@Then("the customer report is put on the messagequeue")
 	public void theCustomerReportIsPutOnTheMessagequeue() {
 		var report = reportService.getCustomerReport(userId);
-		Event expectedResponseEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { report });
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
+		Event expectedResponseEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });
 		Event actualResponseEvent = messageQueue.getEvent("CustomerReportResponse." + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}
@@ -72,14 +75,16 @@ public class ReportRequestsSteps {
 	@When("the merchant requests his report with session id {string}")
 	public void theMerchantRequestsHisReportWithSessionId(String sessionId) {
 		this.sessionId = sessionId;
-		Event reportRequestEvent = new Event("MerchantReportRequest", new Object[] {sessionId, userId});
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, userId);
+		Event reportRequestEvent = new Event("MerchantReportRequest", new Object[] {eventResponse});
 		reportEventHandler.handleMerchantReportRequest(reportRequestEvent);
 	}
 
 	@Then("the merchant report is put on the messagequeue")
 	public void theMerchantReportIsPutOnTheMessagequeue() {
 		var report = reportService.getMerchantReport(userId);
-		Event expectedResponseEvent = new Event("MerchantReportResponse." + sessionId, new Object[] { report });
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
+		Event expectedResponseEvent = new Event("MerchantReportResponse." + sessionId, new Object[] { eventResponse });
 		Event actualResponseEvent = messageQueue.getEvent("MerchantReportResponse." + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}
@@ -90,14 +95,16 @@ public class ReportRequestsSteps {
 	@When("the manager requests his report with session id {string}")
 	public void theManagerRequestsHisReportWithSessionId(String sessionId) {
 		this.sessionId = sessionId;
-		Event reportRequestEvent = new Event("ManagerReportRequest", new Object[] {sessionId});
+		EventResponse eventResponse = new EventResponse(sessionId, true, null);
+		Event reportRequestEvent = new Event("ManagerReportRequest", new Object[] {eventResponse});
 		reportEventHandler.handleManagerReportRequest(reportRequestEvent);
 	}
 
 	@Then("the manager report is put on the messagequeue")
 	public void theManagerReportIsPutOnTheMessagequeue() {
 		var report = reportService.getManagerReport();
-		Event expectedResponseEvent = new Event("ManagerReportResponse." + sessionId, new Object[] { report });
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
+		Event expectedResponseEvent = new Event("ManagerReportResponse." + sessionId, new Object[] { eventResponse });
 		Event actualResponseEvent = messageQueue.getEvent("ManagerReportResponse." + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}

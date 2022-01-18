@@ -3,6 +3,7 @@ package dtu.ReportService.Presentation;
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
 import messaging.Event;
+import messaging.EventResponse;
 import messaging.MessageQueue;
 
 public class ReportEventHandler {
@@ -12,39 +13,57 @@ public class ReportEventHandler {
 	public ReportEventHandler(MessageQueue messageQueue, ReportService reportService) {
 		this.messageQueue = messageQueue;
 		this.reportService = reportService;
+		this.messageQueue.addHandler("LogPaymentRequest", this::handleLogPaymentRequest);
 		this.messageQueue.addHandler("CustomerReportRequest", this::handleCustomerReportRequest);
 		this.messageQueue.addHandler("MerchantReportRequest", this::handleMerchantReportRequest);
 		this.messageQueue.addHandler("ManagerReportRequest", this::handleManagerReportRequest);
-		this.messageQueue.addHandler("LogPaymentRequest", this::handleLogPaymentRequest);
+		this.messageQueue.addHandler("ReportStatusRequest", this::handleReportStatusRequest);
 	}
 	
-	// Handler for verification request from Payments that needs to know if the token is valid and the cid for the token.
-	public void handleLogPaymentRequest(Event e) {
-		var payment = e.getArgument(0, Payment.class);
+	public void handleLogPaymentRequest(Event incommingEvent) {
+		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
+		var payment = eventArguments.getArgument(0, Payment.class);
 		reportService.put(payment);
 	}
 	
-	// Handler for verification request from Payments that needs to know if the token is valid and the cid for the token.
-	public void handleCustomerReportRequest(Event e) {
-		var sessionId = e.getArgument(0, String.class);
-		var customerId = e.getArgument(1, String.class);
-		var customerReport = reportService.getCustomerReport(customerId);
-		Event event = new Event("CustomerReportResponse." + sessionId, new Object[] { customerReport });
-		messageQueue.publish(event);
+	public void handleCustomerReportRequest(Event incommingEvent) {
+		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
+		var sessionId = eventArguments.getSessionId();
+		var customerId = eventArguments.getArgument(0, String.class);
+		
+		var report = reportService.getCustomerReport(customerId);
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
+		Event outgoingEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });
+		messageQueue.publish(outgoingEvent);
 	}
 	
-	public void handleMerchantReportRequest(Event e) {
-		var sessionId = e.getArgument(0, String.class);
-		var merchantId = e.getArgument(1, String.class);
-		var merchantReport = reportService.getMerchantReport(merchantId);
-		Event event = new Event("MerchantReportResponse." + sessionId, new Object[] { merchantReport });
-		messageQueue.publish(event);
+	public void handleMerchantReportRequest(Event incommingEvent) {
+		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
+		var sessionId = eventArguments.getSessionId();
+		var merchantId = eventArguments.getArgument(0, String.class);
+		
+		var report = reportService.getMerchantReport(merchantId);
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
+		Event outgoingEvent = new Event("MerchantReportResponse." + sessionId, new Object[] { eventResponse });
+		messageQueue.publish(outgoingEvent);
 	}
 	
-	public void handleManagerReportRequest(Event e) {
-		var sessionId = e.getArgument(0, String.class);
-		var managerReport = reportService.getManagerReport();
-		Event event = new Event("ManagerReportResponse." + sessionId, new Object[] { managerReport });
-		messageQueue.publish(event);
+	public void handleManagerReportRequest(Event incommingEvent) {
+		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
+		var sessionId = eventArguments.getSessionId();
+		
+		var report = reportService.getManagerReport();
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
+		Event outgoingEvent = new Event("ManagerReportResponse." + sessionId, new Object[] { eventResponse });
+		messageQueue.publish(outgoingEvent);
+	}
+	
+	public void handleReportStatusRequest(Event incommingEvent) {
+		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
+		var sessionId = eventArguments.getSessionId();
+		
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, "Report service ready");
+		Event outgoingEvent = new Event("TokenStatusResponse." + sessionId, new Object[] {eventResponse});
+		messageQueue.publish(outgoingEvent);
 	}
 }
