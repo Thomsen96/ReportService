@@ -9,11 +9,11 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-public class CreateReportSteps {
+public class ReportRequestsSteps {
 	ReportService reportService = new ReportService(new ReportRepository());
 	HashSet<Payment> report;
 	HashSet<PaymentMerchant> merchantReport;
-	String customer1, customer2, customer3, merchant1, merchant2, merchant3, token1, token2, token3, amount1, amount2, amount3;
+	String customerId, customer1, customer2, customer3, merchant1, merchant2, merchant3, token1, token2, token3, amount1, amount2, amount3;
 
 	@Given("a report exists")
 	public void aReportExists() {
@@ -36,24 +36,20 @@ public class CreateReportSteps {
 		reportService.put(payment2);
 		reportService.put(payment3);
 	}
+	
+	@Given("a customer with id {string} has a payment in the report")
+	public void aCustomerWithIdHasAReport(String customerId) {
+		this.customerId = customerId;
+		
+	}
 
-	@When("a manager requests a full report")
-	public void aManagerRequestsAFullReport() {
+	@When("the customer requests his report")
+	public void theCustomerRequestsHisReport() {
 		report = reportService.getManagerReport();
 	}
-
-	@When("a merchant with id {string} requests a full report")
-	public void aMerchantWithIdRequestsAFullReport(String merchantId) {
-		merchantReport = reportService.getMerchantReport(merchantId);
-	}
-
-	@When("a customer with id {string} requests a full report")
-	public void aCustomerWithIdRequestsAFullReport(String customerId) {
-		report = reportService.getCustomerReport(customerId);
-	}
 	
-	@Then("the entire report is returned")
-	public void theEntireReportIsReturned() {
+	@Then("the customer report is put on the messagequeue")
+	public void theCustomerReportIsPutOnTheMessagequeue() {
 	}
 
 }

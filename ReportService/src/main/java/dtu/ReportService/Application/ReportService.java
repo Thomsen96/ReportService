@@ -32,25 +32,4 @@ public class ReportService {
 	public void put(Payment payment) {
 		reportRepository.put(payment);
 	}
-
-	//	public HashSet<Token> createTokens(Integer numOfTokens, String customerId) {
-	//		if(numOfTokens > 0 && numOfTokens < 6 && reportRepository.get(customerId).size() < 2) {
-	//			for( int i = 0; i < numOfTokens; i++) {
-	//				reportRepository.create(customerId);
-	//			}
-	//		}
-	//		return reportRepository.get(customerId);
-	//	}
-	//
-	//	public HashSet<Token> getTokens(String customerId) {
-	//		return reportRepository.get(customerId);
-	//	}
-	//
-	//	public boolean deleteTokensForCustomer(String customerId) {
-	//		return reportRepository.delete(customerId);
-	//	}
-	//	
-	//	public Token getVerifiedToken(String tokenUuid) {
-	//		return reportRepository.getVerfiedToken(tokenUuid);
-	//	}
 }
