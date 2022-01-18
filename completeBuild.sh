@@ -4,7 +4,7 @@ set -e
 # Build and install the libraries
 # abstracting away from using the
 # RabbitMq message queue
-pushd Messaging-utilities
+pushd messaging-utilities-3.2
 ./build.sh
 popd
 
