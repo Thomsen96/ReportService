@@ -63,7 +63,7 @@ public class ReportEventHandler {
 		var sessionId = eventArguments.getSessionId();
 		
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, "Report service ready");
-		Event outgoingEvent = new Event("TokenStatusResponse." + sessionId, new Object[] {eventResponse});
+		Event outgoingEvent = new Event("ReportStatusResponse." + sessionId, new Object[] {eventResponse});
 		messageQueue.publish(outgoingEvent);
 	}
 }
