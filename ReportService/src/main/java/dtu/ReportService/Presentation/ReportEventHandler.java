@@ -1,5 +1,7 @@
 package dtu.ReportService.Presentation;
 
+import java.util.HashSet;
+
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
 import messaging.Event;
@@ -32,18 +34,20 @@ public class ReportEventHandler {
 		var customerId = eventArguments.getArgument(0, String.class);
 		
 		var report = reportService.getCustomerReport(customerId);
+		boolean validRequest = report != null;
 		EventResponse eventResponse;
-		if(report != null) {
-			eventResponse = new EventResponse(sessionId, true, null, report);
+		if(validRequest) {
+			eventResponse = new EventResponse(sessionId, validRequest, null, report);
 		}
 		else {
 			String errorMsg = "There are no logged payments for user: " + customerId;
 			System.out.println(errorMsg);
-			eventResponse = new EventResponse(sessionId, false, errorMsg);
+			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
 		}
 		Event outgoingEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });
 		messageQueue.publish(outgoingEvent);
 	}
+
 	
 	public void handleMerchantReportRequest(Event incommingEvent) {
 		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
@@ -51,7 +55,16 @@ public class ReportEventHandler {
 		var merchantId = eventArguments.getArgument(0, String.class);
 		
 		var report = reportService.getMerchantReport(merchantId);
-		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
+		boolean validRequest = report != null;
+		EventResponse eventResponse;
+		if(validRequest) {
+			eventResponse = new EventResponse(sessionId, validRequest, null, report);
+		}
+		else {
+			String errorMsg = "There are no logged payments for user: " + merchantId;
+			System.out.println(errorMsg);
+			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
+		}
 		Event outgoingEvent = new Event("MerchantReportResponse." + sessionId, new Object[] { eventResponse });
 		messageQueue.publish(outgoingEvent);
 	}

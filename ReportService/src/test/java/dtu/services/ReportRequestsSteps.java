@@ -70,23 +70,12 @@ public class ReportRequestsSteps {
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}
 
-
-//	@When("the customer requests his report with session id {string} without a payment in the log")
-//	public void theCustomerRequestsHisReportWithSessionIdWithoutAPaymentInTheLog(String sessionId) {
-//		this.sessionId = sessionId;
-//		EventResponse eventResponse = new EventResponse(sessionId, true, null, userId);
-//		Event reportRequestEvent = new Event("CustomerReportRequest", new Object[] {eventResponse});
-//		reportEventHandler.handleCustomerReportRequest(reportRequestEvent);
-//	}
-
-
-	@Then("an error message {string} is put on the messagequeue")
-	public void anErrorMessageIsPutOnTheMessagequeue(String expectedErrorMsg) {
+	// Invalid request
+	@Then("a customer error message {string} is put on the messagequeue")
+	public void aCustomerErrorMessageIsPutOnTheMessagequeue(String expectedErrorMsg) {
 		EventResponse eventResponse = new EventResponse(sessionId, false, expectedErrorMsg);
 		Event expectedResponseEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });
-		System.out.println("Expected:\t" + expectedResponseEvent);
 		Event actualResponseEvent = messageQueue.getEvent("CustomerReportResponse." + sessionId);
-		System.out.println("Actual:\t\t" + actualResponseEvent);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}	
 	
@@ -108,6 +97,16 @@ public class ReportRequestsSteps {
 		Event actualResponseEvent = messageQueue.getEvent("MerchantReportResponse." + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}
+	// Invalid request
+	@Then("a merchant error message {string} is put on the messagequeue")
+	public void aMerchantErrorMessageIsPutOnTheMessagequeue(String expectedErrorMsg) {
+		EventResponse eventResponse = new EventResponse(sessionId, false, expectedErrorMsg);
+		Event expectedResponseEvent = new Event("MerchantReportResponse." + sessionId, new Object[] { eventResponse });
+		System.out.println("Expected:\t" + expectedResponseEvent);
+		Event actualResponseEvent = messageQueue.getEvent("MerchantReportResponse." + sessionId);
+		System.out.println("Actual:\t\t" + actualResponseEvent);
+		assertEquals(expectedResponseEvent, actualResponseEvent);
+	}	
 	
 	
 

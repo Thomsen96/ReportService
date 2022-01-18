@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import dtu.ReportService.Domain.Payment;
 import dtu.ReportService.Domain.PaymentMerchant;
 import dtu.ReportService.Infrastructure.ReportRepository;
+import messaging.EventResponse;
 
 public class ReportService {
 
