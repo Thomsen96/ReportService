@@ -6,9 +6,9 @@ import messaging.implementations.RabbitMqQueue;
 
 public class ReportMessageFactory {
   
-  static ReportMessageService service = null;
+  static ReportEventHandler service = null;
 
-	public ReportMessageService getService() {
+	public ReportEventHandler getService() {
 		// The singleton pattern.
 		// Ensure that there is at most
 		// one instance of a PaymentService
@@ -28,7 +28,7 @@ public class ReportMessageFactory {
 
 		//TODO: Check how to add busniss logic here.
 		
-		service = new ReportMessageService(messageQueue, new ReportService(new ReportRepository()));
+		service = new ReportEventHandler(messageQueue, new ReportService(new ReportRepository()));
     //new StudentRegistrationServiceAdapter(service, mq);
 		return service;
   }

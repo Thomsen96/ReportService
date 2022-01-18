@@ -1,24 +1,32 @@
 package dtu.ReportService.Application;
 
+import java.util.HashSet;
+
+import com.google.gson.Gson;
+
 import dtu.ReportService.Domain.Payment;
+import dtu.ReportService.Domain.PaymentMerchant;
 import dtu.ReportService.Infrastructure.ReportRepository;
 
 public class ReportService {
 
 	private ReportRepository reportRepository;
+	Gson gson = new Gson(); 
 
 	public ReportService(ReportRepository reportRepository) {
 		this.reportRepository = reportRepository;
 	}
 
-	public String getCustomerReport(String customerId) {
-		return reportRepository.getCustomerReport(customerId);
+	public HashSet<Payment> getCustomerReport(String customerId) {
+		return reportRepository.getCustomerPayments(customerId);
 	}
-	public String getMerchantReport(String customerId) {
-		return reportRepository.getCustomerReport(customerId);
+
+	public HashSet<PaymentMerchant> getMerchantReport(String merchantId) {
+		return reportRepository.getMerchantPayments(merchantId);
 	}
-	public String getManagerReport() {
-		return reportRepository.getManagerReport();
+
+	public HashSet<Payment> getManagerReport() {
+		return reportRepository.getManagerPayments();
 	}
 	
 	public void put(Payment payment) {

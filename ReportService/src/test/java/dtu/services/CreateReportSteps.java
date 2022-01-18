@@ -25,9 +25,6 @@ import io.restassured.internal.path.json.JSONAssertion;
 public class CreateReportSteps {
 	ReportService reportService = new ReportService(new ReportRepository());
 	String report, customer1, customer2, customer3, merchant1, merchant2, merchant3, token1, token2, token3, amount1, amount2, amount3;
-	Boolean paymentStatus1 = true;
-	Boolean paymentStatus2 = false;
-
 
 	@Given("a report exists")
 	public void aReportExists() {
@@ -43,10 +40,9 @@ public class CreateReportSteps {
 		amount1 = "300";
 		amount2 = "200";
 		amount3 = "50";
-		paymentStatus1 = true;
-		Payment payment1 = new Payment(customer1, merchant1, token1, amount1, paymentStatus1);
-		Payment payment2 = new Payment(customer1, merchant1, token2, amount2, paymentStatus1);
-		Payment payment3 = new Payment(customer1, merchant1, token3, amount3, paymentStatus1);
+		Payment payment1 = new Payment(customer1, merchant1, token1, amount1);
+		Payment payment2 = new Payment(customer1, merchant1, token2, amount2);
+		Payment payment3 = new Payment(customer1, merchant1, token3, amount3);
 		reportService.put(payment1);
 		reportService.put(payment2);
 		reportService.put(payment3);

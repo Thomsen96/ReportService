@@ -12,34 +12,39 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import dtu.ReportService.Domain.Payment;
+import dtu.ReportService.Domain.PaymentMerchant;
 import dtu.ReportService.Domain.Token;
 
 public class ReportRepository {
 	Gson gson = new Gson(); 
-	// 		cid		set of payments for customer
+	// 		cId		set of payments for customer
 	HashMap<String, HashSet<Payment>> customerReport = new HashMap<>();
-	// 		mid		set of payments for merchant
-	HashMap<String, HashSet<Payment>> merchantReport = new HashMap<>();
-	// 		tid		set all payments
-	HashMap<String, Payment> managerReport = new HashMap<>();
+	// 		mId		set of payments for merchant
+	HashMap<String, HashSet<PaymentMerchant>> merchantReport = new HashMap<>();
+	// 		tId		set all payments
+	HashSet<Payment> managerReport = new HashSet<>();
+
 	
-	public String getCustomerReport(String customerId) {
-		String reportAsJsonString = gson.toJson(customerReport.get(customerId));
-		return reportAsJsonString;
+	public HashSet<Payment> getCustomerPayments(String customerId) {
+		if(customerReport.containsKey(customerId)) {
+			return customerReport.get(customerId);
+		}
+		return null;
 	}
-
-	public String getMerchantReport(String merchantId) {
-		String reportAsJsonString = gson.toJson(merchantReport.get(merchantId));
-		return reportAsJsonString;
+	
+	public HashSet<PaymentMerchant> getMerchantPayments(String merchantId) {
+		if(merchantReport.containsKey(merchantId)) {
+			return merchantReport.get(merchantId);
+		}
+		return null;
 	}
-
-	public String getManagerReport() {
-		String reportAsJsonString = gson.toJson(managerReport);
-		return reportAsJsonString;
+	
+	public HashSet<Payment> getManagerPayments() {
+		return managerReport;
 	}
 	
 	public void put(Payment payment) {
-		managerReport.put(payment.getToken(), payment);
+		managerReport.add(payment);
 		
 		if (customerReport.containsKey(payment.getCustomerId())) {
 			customerReport.get(payment.getCustomerId()).add(payment);
@@ -50,19 +55,32 @@ public class ReportRepository {
 			customerReport.put(payment.getCustomerId(), paymentSet);
 		}
 		
-		// TODO: Remember merchantReports shouldn't contain customer info
+		PaymentMerchant merchantPayment = new PaymentMerchant(payment);
 		if (merchantReport.containsKey(payment.getMerchantId())) {
-			merchantReport.get(payment.getMerchantId()).add(payment);
+			merchantReport.get(payment.getMerchantId()).add(merchantPayment);
 		}
 		else {
-			var paymentSet = new HashSet<Payment>();
-			paymentSet.add(payment);
-			merchantReport.put(payment.getMerchantId(), paymentSet);
+			var paymentSet = new HashSet<PaymentMerchant>();
+			paymentSet.add(merchantPayment);
+			merchantReport.put(merchantPayment.getMerchantId(), paymentSet);
 		}
 		
 	}
 	
-	
+//	public String getCustomerReport(String customerId) {
+//		String reportAsJsonString = gson.toJson(customerReport.get(customerId));
+//		return reportAsJsonString;
+//	}
+//	
+//	public String getMerchantReport(String merchantId) {
+//		String reportAsJsonString = gson.toJson(merchantReport.get(merchantId));
+//		return reportAsJsonString;
+//	}
+//
+//	public String getManagerReport() {
+//		String reportAsJsonString = gson.toJson(managerReport);
+//		return reportAsJsonString;
+//	}
 	
 	
 	
