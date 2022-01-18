@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>dtu.group2</groupId>
-  <artifactId>token-service</artifactId>
+  <artifactId>report-service</artifactId>
   <version>1.0.0</version>
   <properties>
 		<surefire-plugin.version>2.22.1</surefire-plugin.version>
@@ -84,14 +84,14 @@
 			<version>5.7.0</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- This is needed to provide the @Cucumber annotation needed for Cucumber 
+		<!-- This is needed to provide the @Cucumber annotation needed for Cucumber
 			scenarios to run with the JUnit 5 test runner. -->
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit-platform-engine</artifactId>
 			<version>6.9.1</version>
 			<scope>test</scope>
-		</dependency>		<!-- This is needed to provide the @Cucumber annotation needed for Cucumber 
+		</dependency>		<!-- This is needed to provide the @Cucumber annotation needed for Cucumber
 			scenarios to run with the JUnit 5 test runner. -->
 		<dependency>
 			<groupId>io.cucumber</groupId>

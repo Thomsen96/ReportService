@@ -1,11 +1,11 @@
-# Build with: docker build --tag tokenservice_server .
-# Test with: docker run -ti -p 8080:8080 tokenservice_server
+# Build with: docker build --tag reportservice_server .
+# Test with: docker run -ti -p 8080:8080 reportservice_server
 
 FROM adoptopenjdk:11-jre-hotspot
 COPY target/lib /usr/src/lib
-COPY target/token-service-1.0.0-runner.jar /usr/src/
+COPY target/report-service-1.0.0-runner.jar /usr/src/
 WORKDIR /usr/src/
-CMD java -Dquarkus.http.port=8182 -Xmx64m -jar token-service-1.0.0-runner.jar
+CMD java -Dquarkus.http.port=8182 -Xmx64m -jar report-service-1.0.0-runner.jar
 
 #FROM adoptopenjdk:11-jre-hotspot
 #COPY target/lib /usr/src/lib

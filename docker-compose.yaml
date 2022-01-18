@@ -1,0 +1,13 @@
+version: '3'
+services:
+
+  report:
+    container_name: report
+    image: report-service
+    environment:
+      - RABBIT_MQ_HOSTNAME=rabbitMq
+
+networks:
+  default:
+    external: true
+    name: dtupaysystem_default

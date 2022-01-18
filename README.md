@@ -1,6 +1,6 @@
-# Token service
+# Report service
 
-The service is a part of the total DTU Pay microservice system where where the **responsibility** of the service is to handle tokens. with regards to generation and verification.
+The service is a part of the total DTU Pay microservice system where where the **responsibility** of the service is to handle report generation and logging.
 
 ## Build process
 
