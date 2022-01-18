@@ -1,6 +1,6 @@
 package dtu.ReportService.Domain;
-
 public class Payment {
+	
 	private String customerId;
 	private String merchantId;
 	private String token;
