@@ -41,7 +41,6 @@ public class ReportEventHandler {
 		}
 		else {
 			String errorMsg = "There are no logged payments for user: " + customerId;
-			System.out.println(errorMsg);
 			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
 		}
 		Event outgoingEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });

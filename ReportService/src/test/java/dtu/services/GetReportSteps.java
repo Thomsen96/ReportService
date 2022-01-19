@@ -2,6 +2,7 @@ package dtu.services;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
@@ -13,8 +14,8 @@ import io.cucumber.java.en.When;
 
 public class GetReportSteps {
 	ReportService reportService = new ReportService(new ReportRepository());
-	HashSet<Payment> report;
-	HashSet<PaymentMerchant> merchantReport;
+	ArrayList<Payment> report;
+	ArrayList<PaymentMerchant> merchantReport;
 	String customer1, customer2, customer3, merchant1, merchant2, merchant3, token1, token2, token3, amount1, amount2, amount3;
 	Payment payment1, payment2, payment3;
 	

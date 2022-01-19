@@ -1,5 +1,6 @@
 package dtu.ReportService.Application;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import com.google.gson.Gson;
@@ -17,15 +18,15 @@ public class ReportService {
 		this.reportRepository = reportRepository;
 	}
 
-	public HashSet<Payment> getCustomerReport(String customerId) {
+	public ArrayList<Payment> getCustomerReport(String customerId) {
 		return reportRepository.getCustomerPayments(customerId);
 	}
 
-	public HashSet<PaymentMerchant> getMerchantReport(String merchantId) {
+	public ArrayList<PaymentMerchant> getMerchantReport(String merchantId) {
 		return reportRepository.getMerchantPayments(merchantId);
 	}
 
-	public HashSet<Payment> getManagerReport() {
+	public ArrayList<Payment> getManagerReport() {
 		return reportRepository.getManagerPayments();
 	}
 	

@@ -2,7 +2,7 @@ package dtu.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
 import dtu.ReportService.Domain.PaymentMerchant;
@@ -21,8 +21,8 @@ public class ReportRequestsSteps {
 	private ReportEventHandler reportEventHandler = new ReportEventHandler(messageQueue, reportService);
 
 	String customer1, customer2, customer3, merchant1, merchant2, merchant3, token1, token2, token3, amount1, amount2, amount3;
-	HashSet<Payment> report;
-	HashSet<PaymentMerchant> merchantReport;
+	ArrayList<Payment> report;
+	ArrayList<PaymentMerchant> merchantReport;
 	String sessionId, userId;
 	
 	@Given("a custom report exists")
@@ -102,9 +102,7 @@ public class ReportRequestsSteps {
 	public void aMerchantErrorMessageIsPutOnTheMessagequeue(String expectedErrorMsg) {
 		EventResponse eventResponse = new EventResponse(sessionId, false, expectedErrorMsg);
 		Event expectedResponseEvent = new Event("MerchantReportResponse." + sessionId, new Object[] { eventResponse });
-		System.out.println("Expected:\t" + expectedResponseEvent);
 		Event actualResponseEvent = messageQueue.getEvent("MerchantReportResponse." + sessionId);
-		System.out.println("Actual:\t\t" + actualResponseEvent);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}	
 	
