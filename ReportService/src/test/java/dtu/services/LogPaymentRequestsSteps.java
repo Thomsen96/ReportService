@@ -1,5 +1,6 @@
 package dtu.services;
 
+import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.LOG_PAYMENT_REQUESTED;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,7 +39,7 @@ public class LogPaymentRequestsSteps {
 	public void thePaymentIsSentWithSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, payment);
-		Event reportRequestEvent = new Event("LogPaymentRequest", new Object[] {eventResponse});
+		Event reportRequestEvent = new Event(LOG_PAYMENT_REQUESTED, new Object[] {eventResponse});
 		reportEventHandler.handleLogPaymentRequest(reportRequestEvent);
 	}
 	

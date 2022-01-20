@@ -8,6 +8,9 @@ import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
 
+import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.*;
+import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.PUBLISH.*;
+
 public class ReportEventHandler {
 	private MessageQueue messageQueue;
 	private ReportService reportService;
@@ -15,13 +18,13 @@ public class ReportEventHandler {
 	public ReportEventHandler(MessageQueue messageQueue, ReportService reportService) {
 		this.messageQueue = messageQueue;
 		this.reportService = reportService;
-		this.messageQueue.addHandler("LogPaymentRequest", this::handleLogPaymentRequest);
-		this.messageQueue.addHandler("CustomerReportRequest", this::handleCustomerReportRequest);
-		this.messageQueue.addHandler("MerchantReportRequest", this::handleMerchantReportRequest);
-		this.messageQueue.addHandler("ManagerReportRequest", this::handleManagerReportRequest);
-		this.messageQueue.addHandler("ReportStatusRequest", this::handleReportStatusRequest);
+		this.messageQueue.addHandler(LOG_PAYMENT_REQUESTED, this::handleLogPaymentRequest);
+		this.messageQueue.addHandler(REPORT_CUSTOMER_REQUESTED, this::handleCustomerReportRequest);
+		this.messageQueue.addHandler(REPORT_MERCHANT_REQUESTED, this::handleMerchantReportRequest);
+		this.messageQueue.addHandler(REPORT_MANAGER_REQUESTED, this::handleManagerReportRequest);
+		this.messageQueue.addHandler(REST_STATUS_REQUESTED, this::handleReportStatusRequest);
 	}
-	
+
 	public void handleLogPaymentRequest(Event incommingEvent) {
 		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
 		var payment = eventArguments.getArgument(0, Payment.class);
@@ -43,7 +46,7 @@ public class ReportEventHandler {
 			String errorMsg = "There are no logged payments for user: " + customerId;
 			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
 		}
-		Event outgoingEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });
+		Event outgoingEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, new Object[] { eventResponse });
 		messageQueue.publish(outgoingEvent);
 	}
 
@@ -64,7 +67,7 @@ public class ReportEventHandler {
 			System.out.println(errorMsg);
 			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
 		}
-		Event outgoingEvent = new Event("MerchantReportResponse." + sessionId, new Object[] { eventResponse });
+		Event outgoingEvent = new Event(REPORT_MERCHANT_RESPONDED + sessionId, new Object[] { eventResponse });
 		messageQueue.publish(outgoingEvent);
 	}
 	
@@ -74,7 +77,7 @@ public class ReportEventHandler {
 		
 		var report = reportService.getManagerReport();
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
-		Event outgoingEvent = new Event("ManagerReportResponse." + sessionId, new Object[] { eventResponse });
+		Event outgoingEvent = new Event(REPORT_MANAGER_RESPONDED + sessionId, new Object[] { eventResponse });
 		messageQueue.publish(outgoingEvent);
 	}
 	
@@ -83,7 +86,7 @@ public class ReportEventHandler {
 		var sessionId = eventArguments.getSessionId();
 		
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, "Report service ready");
-		Event outgoingEvent = new Event("ReportStatusResponse." + sessionId, new Object[] {eventResponse});
+		Event outgoingEvent = new Event(REST_STATUS_RESPONDED + sessionId, new Object[] {eventResponse});
 		messageQueue.publish(outgoingEvent);
 	}
 }

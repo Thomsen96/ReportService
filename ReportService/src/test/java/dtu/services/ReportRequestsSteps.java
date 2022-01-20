@@ -1,5 +1,7 @@
 package dtu.services;
 
+import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.*;
+import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.PUBLISH.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
@@ -58,15 +60,15 @@ public class ReportRequestsSteps {
 	public void theCustomerRequestsHisReportWithSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, userId);
-		Event reportRequestEvent = new Event("CustomerReportRequest", new Object[] {eventResponse});
+		Event reportRequestEvent = new Event(REPORT_CUSTOMER_REQUESTED, new Object[] {eventResponse});
 		reportEventHandler.handleCustomerReportRequest(reportRequestEvent);
 	}
 	@Then("the customer report is put on the messagequeue")
 	public void theCustomerReportIsPutOnTheMessagequeue() {
 		var report = reportService.getCustomerReport(userId);
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
-		Event expectedResponseEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });
-		Event actualResponseEvent = messageQueue.getEvent("CustomerReportResponse." + sessionId);
+		Event expectedResponseEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event actualResponseEvent = messageQueue.getEvent(REPORT_CUSTOMER_RESPONDED + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}
 
@@ -74,8 +76,8 @@ public class ReportRequestsSteps {
 	@Then("a customer error message {string} is put on the messagequeue")
 	public void aCustomerErrorMessageIsPutOnTheMessagequeue(String expectedErrorMsg) {
 		EventResponse eventResponse = new EventResponse(sessionId, false, expectedErrorMsg);
-		Event expectedResponseEvent = new Event("CustomerReportResponse." + sessionId, new Object[] { eventResponse });
-		Event actualResponseEvent = messageQueue.getEvent("CustomerReportResponse." + sessionId);
+		Event expectedResponseEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event actualResponseEvent = messageQueue.getEvent(REPORT_CUSTOMER_RESPONDED + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}	
 	
@@ -86,23 +88,23 @@ public class ReportRequestsSteps {
 	public void theMerchantRequestsHisReportWithSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, userId);
-		Event reportRequestEvent = new Event("MerchantReportRequest", new Object[] {eventResponse});
+		Event reportRequestEvent = new Event(REPORT_MERCHANT_REQUESTED, new Object[] {eventResponse});
 		reportEventHandler.handleMerchantReportRequest(reportRequestEvent);
 	}
 	@Then("the merchant report is put on the messagequeue")
 	public void theMerchantReportIsPutOnTheMessagequeue() {
 		var report = reportService.getMerchantReport(userId);
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
-		Event expectedResponseEvent = new Event("MerchantReportResponse." + sessionId, new Object[] { eventResponse });
-		Event actualResponseEvent = messageQueue.getEvent("MerchantReportResponse." + sessionId);
+		Event expectedResponseEvent = new Event(REPORT_MERCHANT_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event actualResponseEvent = messageQueue.getEvent(REPORT_MERCHANT_RESPONDED + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}
 	// Invalid request
 	@Then("a merchant error message {string} is put on the messagequeue")
 	public void aMerchantErrorMessageIsPutOnTheMessagequeue(String expectedErrorMsg) {
 		EventResponse eventResponse = new EventResponse(sessionId, false, expectedErrorMsg);
-		Event expectedResponseEvent = new Event("MerchantReportResponse." + sessionId, new Object[] { eventResponse });
-		Event actualResponseEvent = messageQueue.getEvent("MerchantReportResponse." + sessionId);
+		Event expectedResponseEvent = new Event(REPORT_MERCHANT_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event actualResponseEvent = messageQueue.getEvent(REPORT_MERCHANT_RESPONDED + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}	
 	
@@ -113,15 +115,15 @@ public class ReportRequestsSteps {
 	public void theManagerRequestsHisReportWithSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		EventResponse eventResponse = new EventResponse(sessionId, true, null);
-		Event reportRequestEvent = new Event("ManagerReportRequest", new Object[] {eventResponse});
+		Event reportRequestEvent = new Event(REPORT_MANAGER_REQUESTED, new Object[] {eventResponse});
 		reportEventHandler.handleManagerReportRequest(reportRequestEvent);
 	}
 	@Then("the manager report is put on the messagequeue")
 	public void theManagerReportIsPutOnTheMessagequeue() {
 		var report = reportService.getManagerReport();
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
-		Event expectedResponseEvent = new Event("ManagerReportResponse." + sessionId, new Object[] { eventResponse });
-		Event actualResponseEvent = messageQueue.getEvent("ManagerReportResponse." + sessionId);
+		Event expectedResponseEvent = new Event(REPORT_MANAGER_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event actualResponseEvent = messageQueue.getEvent(REPORT_MANAGER_RESPONDED + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}
 
