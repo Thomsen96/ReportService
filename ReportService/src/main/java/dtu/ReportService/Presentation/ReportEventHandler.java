@@ -2,12 +2,16 @@ package dtu.ReportService.Presentation;
 
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
+import dtu.ReportService.Domain.ReportDTO;
 import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
 
 import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.*;
 import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.PUBLISH.*;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class ReportEventHandler {
 	private MessageQueue messageQueue;
@@ -23,18 +27,22 @@ public class ReportEventHandler {
 		this.messageQueue.addHandler(REST_STATUS_REQUESTED, this::handleReportStatusRequest);
 	}
 
-	public void handleLogPaymentRequest(Event incommingEvent) {
-		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
+	public void handleLogPaymentRequest(Event incomingEvent) {
+		EventResponse eventArguments = incomingEvent.getArgument(0, EventResponse.class);
 		var payment = eventArguments.getArgument(0, Payment.class);
 		reportService.put(payment);
 	}
 	
-	public void handleCustomerReportRequest(Event incommingEvent) {
-		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
+	public void handleCustomerReportRequest(Event incomingEvent) {
+		EventResponse eventArguments = incomingEvent.getArgument(0, EventResponse.class);
 		var sessionId = eventArguments.getSessionId();
 		var customerId = eventArguments.getArgument(0, String.class);
+
+		var payments = reportService.getCustomerReport(customerId);
 		
-		var report = reportService.getCustomerReport(customerId);
+		
+		ReportDTO.Customer report = new ReportDTO.Customer( new ArrayList<>(
+			payments.stream().map(Payment::toCustomerDTO).collect(Collectors.toList())));
 		boolean validRequest = report != null;
 		EventResponse eventResponse;
 		if(validRequest) {
@@ -44,7 +52,7 @@ public class ReportEventHandler {
 			String errorMsg = "There are no logged payments for user: " + customerId;
 			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
 		}
-		Event outgoingEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event outgoingEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId,  eventResponse);
 		messageQueue.publish(outgoingEvent);
 	}
 

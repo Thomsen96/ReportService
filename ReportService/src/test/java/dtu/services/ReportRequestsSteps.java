@@ -6,9 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
 import dtu.ReportService.Domain.PaymentMerchant;
+import dtu.ReportService.Domain.ReportDTO;
 import dtu.ReportService.Infrastructure.ReportRepository;
 import dtu.ReportService.Presentation.ReportEventHandler;
 import io.cucumber.java.en.Given;
@@ -61,23 +64,24 @@ public class ReportRequestsSteps {
 	public void theCustomerRequestsHisReportWithSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, userId);
-		Event reportRequestEvent = new Event(REPORT_CUSTOMER_REQUESTED, new Object[] {eventResponse});
+		Event reportRequestEvent = new Event(REPORT_CUSTOMER_REQUESTED, eventResponse);
 		reportEventHandler.handleCustomerReportRequest(reportRequestEvent);
 	}
+
 	@Then("the customer report is put on the messagequeue")
 	public void theCustomerReportIsPutOnTheMessagequeue() {
-		var report = reportService.getCustomerReport(userId);
+		var report = new ReportDTO.Customer(new ArrayList<>(reportService.getCustomerReport(userId).stream().map(Payment::toCustomerDTO).collect(Collectors.toList())));
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
-		Event expectedResponseEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event expectedResponseEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, eventResponse );
 		Event actualResponseEvent = messageQueue.getEvent(REPORT_CUSTOMER_RESPONDED + sessionId);
-		assertEquals(expectedResponseEvent, actualResponseEvent);
+		assertEquals(eventResponse, actualResponseEvent.getArgument(0, EventResponse.class));
 	}
 
 	// Invalid request
 	@Then("a customer error message {string} is put on the messagequeue")
 	public void aCustomerErrorMessageIsPutOnTheMessagequeue(String expectedErrorMsg) {
 		EventResponse eventResponse = new EventResponse(sessionId, false, expectedErrorMsg);
-		Event expectedResponseEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event expectedResponseEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, eventResponse);
 		Event actualResponseEvent = messageQueue.getEvent(REPORT_CUSTOMER_RESPONDED + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
 	}	
