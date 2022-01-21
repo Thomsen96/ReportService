@@ -11,7 +11,10 @@ import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.*;
 import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.PUBLISH.*;
 
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.stream.Collectors;
+=======
+>>>>>>> 97a6062cd63f81e784a01b9aa9f718be2ef44ba7
 
 public class ReportEventHandler {
 	private MessageQueue messageQueue;
@@ -24,13 +27,15 @@ public class ReportEventHandler {
 		this.messageQueue.addHandler(REPORT_CUSTOMER_REQUESTED, this::handleCustomerReportRequest);
 		this.messageQueue.addHandler(REPORT_MERCHANT_REQUESTED, this::handleMerchantReportRequest);
 		this.messageQueue.addHandler(REPORT_MANAGER_REQUESTED, this::handleManagerReportRequest);
-		this.messageQueue.addHandler(REST_STATUS_REQUESTED, this::handleReportStatusRequest);
+		this.messageQueue.addHandler(REPORT_STATUS_REQUESTED, this::handleReportStatusRequest);
 	}
 
-	public void handleLogPaymentRequest(Event incomingEvent) {
-		EventResponse eventArguments = incomingEvent.getArgument(0, EventResponse.class);
-		var payment = eventArguments.getArgument(0, Payment.class);
+	public void handleLogPaymentRequest(Event incommingEvent) {
+		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
+		Payment payment = eventArguments.getArgument(0, Payment.class);
+		System.out.println("Received payment: " + payment);
 		reportService.put(payment);
+		System.out.println("Payment has been logged");
 	}
 	
 	public void handleCustomerReportRequest(Event incomingEvent) {
@@ -46,10 +51,12 @@ public class ReportEventHandler {
 		boolean validRequest = report != null;
 		EventResponse eventResponse;
 		if(validRequest) {
+			System.out.println("Valid request");
 			eventResponse = new EventResponse(sessionId, validRequest, null, report);
 		}
 		else {
 			String errorMsg = "There are no logged payments for user: " + customerId;
+			System.out.println("Invalid request. " + errorMsg);
 			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
 		}
 		Event outgoingEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId,  eventResponse);
@@ -92,7 +99,7 @@ public class ReportEventHandler {
 		var sessionId = eventArguments.getSessionId();
 		
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, "Report service ready");
-		Event outgoingEvent = new Event(REST_STATUS_RESPONDED + sessionId, new Object[] {eventResponse});
+		Event outgoingEvent = new Event(REPORT_STATUS_RESPONDED + sessionId, new Object[] {eventResponse});
 		messageQueue.publish(outgoingEvent);
 	}
 }
