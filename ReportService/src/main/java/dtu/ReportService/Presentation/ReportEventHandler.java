@@ -27,8 +27,10 @@ public class ReportEventHandler {
 
 	public void handleLogPaymentRequest(Event incommingEvent) {
 		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
-		var payment = eventArguments.getArgument(0, Payment.class);
+		Payment payment = eventArguments.getArgument(0, Payment.class);
+		System.out.println("Received payment: " + payment);
 		reportService.put(payment);
+		System.out.println("Payment has been logged");
 	}
 	
 	public void handleCustomerReportRequest(Event incommingEvent) {
