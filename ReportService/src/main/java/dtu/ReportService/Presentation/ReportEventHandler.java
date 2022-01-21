@@ -2,8 +2,10 @@ package dtu.ReportService.Presentation;
 
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
+import dtu.ReportService.Domain.PaymentMerchant;
 import dtu.ReportService.Domain.ReportDTO;
 import dtu.ReportService.Domain.ReportDTO.CustomerPayment;
+import dtu.ReportService.Domain.ReportDTO.MerchantPayment;
 import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
@@ -68,17 +70,30 @@ public class ReportEventHandler {
 		var sessionId = eventArguments.getSessionId();
 		var merchantId = eventArguments.getArgument(0, String.class);
 		
-		var report = reportService.getMerchantReport(merchantId);
-		boolean validRequest = report != null;
+		var payments = reportService.getMerchantReport(merchantId);
+		boolean validRequest = payments != null;
 		EventResponse eventResponse;
 		if(validRequest) {
+			ReportDTO.Merchant report = new ReportDTO.Merchant( new ArrayList<MerchantPayment>(
+				payments.stream().map(PaymentMerchant::toMerchantDTO).collect(Collectors.toList())));
+			
+			System.out.println("Generated reports: " + report);
+			System.out.println("Valid request");
 			eventResponse = new EventResponse(sessionId, validRequest, null, report);
 		}
 		else {
 			String errorMsg = "There are no logged payments for user: " + merchantId;
-			System.out.println(errorMsg);
+			System.out.println("Invalid request. " + errorMsg);
 			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
 		}
+//		if(validRequest) {
+//			eventResponse = new EventResponse(sessionId, validRequest, null, report);
+//		}
+//		else {
+//			String errorMsg = "There are no logged payments for user: " + merchantId;
+//			System.out.println(errorMsg);
+//			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
+//		}
 		Event outgoingEvent = new Event(REPORT_MERCHANT_RESPONDED + sessionId, eventResponse );
 		messageQueue.publish(outgoingEvent);
 	}

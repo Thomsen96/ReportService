@@ -59,4 +59,10 @@ public class PaymentMerchant {
 	public String getAmount() {
 		return amount;
 	}
+	
+
+	public ReportDTO.MerchantPayment toMerchantDTO()
+	{
+		return new ReportDTO.MerchantPayment( merchantId, token, amount);
+	}
 }

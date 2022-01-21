@@ -83,8 +83,4 @@ public class Payment {
 	{
 		return new ReportDTO.CustomerPayment( customerId, merchantId, token, amount);
 	}
-	public ReportDTO.MerchantPayment toMerchantDTO()
-	{
-		return new ReportDTO.MerchantPayment( merchantId, token, amount);
-	}
 }
