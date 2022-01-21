@@ -3,6 +3,7 @@ package dtu.ReportService.Presentation;
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
 import dtu.ReportService.Domain.ReportDTO;
+import dtu.ReportService.Domain.ReportDTO.CustomerPayment;
 import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
@@ -11,10 +12,7 @@ import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.*;
 import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.PUBLISH.*;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
 import java.util.stream.Collectors;
-=======
->>>>>>> 97a6062cd63f81e784a01b9aa9f718be2ef44ba7
 
 public class ReportEventHandler {
 	private MessageQueue messageQueue;
@@ -45,12 +43,13 @@ public class ReportEventHandler {
 
 		var payments = reportService.getCustomerReport(customerId);
 		
-		
-		ReportDTO.Customer report = new ReportDTO.Customer( new ArrayList<>(
-			payments.stream().map(Payment::toCustomerDTO).collect(Collectors.toList())));
-		boolean validRequest = report != null;
+		boolean validRequest = payments != null;
 		EventResponse eventResponse;
 		if(validRequest) {
+			ReportDTO.Customer report = new ReportDTO.Customer( new ArrayList<CustomerPayment>(
+				payments.stream().map(Payment::toCustomerDTO).collect(Collectors.toList())));
+			
+			System.out.println("Generated reports: " + report);
 			System.out.println("Valid request");
 			eventResponse = new EventResponse(sessionId, validRequest, null, report);
 		}
@@ -80,7 +79,7 @@ public class ReportEventHandler {
 			System.out.println(errorMsg);
 			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
 		}
-		Event outgoingEvent = new Event(REPORT_MERCHANT_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event outgoingEvent = new Event(REPORT_MERCHANT_RESPONDED + sessionId, eventResponse );
 		messageQueue.publish(outgoingEvent);
 	}
 	
@@ -90,7 +89,7 @@ public class ReportEventHandler {
 		
 		var report = reportService.getManagerReport();
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
-		Event outgoingEvent = new Event(REPORT_MANAGER_RESPONDED + sessionId, new Object[] { eventResponse });
+		Event outgoingEvent = new Event(REPORT_MANAGER_RESPONDED + sessionId,  eventResponse );
 		messageQueue.publish(outgoingEvent);
 	}
 	
@@ -99,7 +98,7 @@ public class ReportEventHandler {
 		var sessionId = eventArguments.getSessionId();
 		
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, "Report service ready");
-		Event outgoingEvent = new Event(REPORT_STATUS_RESPONDED + sessionId, new Object[] {eventResponse});
+		Event outgoingEvent = new Event(REPORT_STATUS_RESPONDED + sessionId, eventResponse );
 		messageQueue.publish(outgoingEvent);
 	}
 }

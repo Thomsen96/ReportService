@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
-import dtu.ReportService.Domain.PaymentMerchant;
 import dtu.ReportService.Domain.ReportDTO;
+import dtu.ReportService.Domain.ReportDTO.CustomerPayment;
 import dtu.ReportService.Infrastructure.ReportRepository;
 import dtu.ReportService.Presentation.ReportEventHandler;
 import io.cucumber.java.en.Given;
@@ -27,8 +27,8 @@ public class ReportRequestsSteps {
 	private ReportEventHandler reportEventHandler = new ReportEventHandler(messageQueue, reportService);
 
 	String customer1, customer2, customer3, merchant1, merchant2, merchant3, token1, token2, token3, amount1, amount2, amount3;
-	ArrayList<Payment> report;
-	ArrayList<PaymentMerchant> merchantReport;
+	ReportDTO.Customer customerReport;
+	ReportDTO.Merchant merchantReport;
 	String sessionId, userId;
 	
 	@Given("a custom report exists")
@@ -70,11 +70,15 @@ public class ReportRequestsSteps {
 
 	@Then("the customer report is put on the messagequeue")
 	public void theCustomerReportIsPutOnTheMessagequeue() {
-		var report = new ReportDTO.Customer(new ArrayList<>(reportService.getCustomerReport(userId).stream().map(Payment::toCustomerDTO).collect(Collectors.toList())));
-		EventResponse eventResponse = new EventResponse(sessionId, true, null, report);
-		Event expectedResponseEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, eventResponse );
+		var payments = reportService.getCustomerReport(userId);
+		customerReport = new ReportDTO.Customer( new ArrayList<CustomerPayment>(
+			payments.stream().map(Payment::toCustomerDTO).collect(Collectors.toList())));
+		
+		System.out.println("report Mock: " + customerReport);
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, customerReport);
 		Event actualResponseEvent = messageQueue.getEvent(REPORT_CUSTOMER_RESPONDED + sessionId);
-		assertEquals(eventResponse, actualResponseEvent.getArgument(0, EventResponse.class));
+		assertEquals(customerReport, actualResponseEvent.getArgument(0, EventResponse.class).getArgument(0, ReportDTO.Customer.class));
+		//assertEquals(eventResponse, actualResponseEvent.getArgument(0, EventResponse.class));
 	}
 
 	// Invalid request
