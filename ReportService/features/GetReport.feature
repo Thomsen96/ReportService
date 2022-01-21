@@ -1,4 +1,4 @@
-Feature: Get report feature
+Feature: Get report feature 
 
   Scenario: Manager requests a full report
   	Given a report exists

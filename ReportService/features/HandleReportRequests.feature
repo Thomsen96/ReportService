@@ -1,5 +1,9 @@
 Feature: Handle report requests feature
 
+  Scenario: Service requests status of ReportService
+    When a handleReportStatusRequest with sessionId "123321" is made
+    Then an eventResponse with the message "Report service ready" is sent on the correct topic
+
   Scenario: Customer report request is handled and a report is returned
   	Given a custom report exists
     And a user with id "customerId1"

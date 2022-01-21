@@ -1,7 +1,5 @@
 package dtu.ReportService.Presentation;
 
-import java.util.HashSet;
-
 import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
 import messaging.Event;

@@ -3,6 +3,7 @@ package dtu.services;
 import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.*;
 import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.PUBLISH.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import dtu.ReportService.Application.ReportService;
@@ -125,6 +126,22 @@ public class ReportRequestsSteps {
 		Event expectedResponseEvent = new Event(REPORT_MANAGER_RESPONDED + sessionId, new Object[] { eventResponse });
 		Event actualResponseEvent = messageQueue.getEvent(REPORT_MANAGER_RESPONDED + sessionId);
 		assertEquals(expectedResponseEvent, actualResponseEvent);
+	}
+	
+	@When("a handleReportStatusRequest with sessionId {string} is made")
+	public void aHandleReportStatusRequestIsMade(String sessionId) {
+		this.sessionId = sessionId; 
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, null);
+		Event statusEvent = new Event(REST_STATUS_REQUESTED, eventResponse);
+		reportEventHandler.handleReportStatusRequest(statusEvent);
+	}
+
+	@Then("an eventResponse with the message {string} is sent on the correct topic")
+	public void anEventResponseWithTheMessageIsSent(String responseMessage) {
+	    Event statusResponse = messageQueue.getEvent(REST_STATUS_RESPONDED + sessionId);
+		assertNotNull(statusResponse);
+	    EventResponse responseContent = statusResponse.getArgument(0, EventResponse.class);
+	    assertEquals(responseMessage, responseContent.getArgument(0, String.class));
 	}
 
 }

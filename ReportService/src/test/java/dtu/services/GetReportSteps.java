@@ -8,16 +8,22 @@ import dtu.ReportService.Application.ReportService;
 import dtu.ReportService.Domain.Payment;
 import dtu.ReportService.Domain.PaymentMerchant;
 import dtu.ReportService.Infrastructure.ReportRepository;
+import dtu.ReportService.Presentation.ReportEventHandler;
+import dtu.ReportService.Presentation.Runner;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messaging.Event;
 
 public class GetReportSteps {
 	ReportService reportService = new ReportService(new ReportRepository());
+
 	ArrayList<Payment> report;
 	ArrayList<PaymentMerchant> merchantReport;
 	String customer1, customer2, customer3, merchant1, merchant2, merchant3, token1, token2, token3, amount1, amount2, amount3;
 	Payment payment1, payment2, payment3;
+	
+	Runner runner;
 	
 	@Given("a report exists")
 	public void aReportExists() {
