@@ -20,7 +20,7 @@ public class ReportEventHandler {
 		this.messageQueue.addHandler(REPORT_CUSTOMER_REQUESTED, this::handleCustomerReportRequest);
 		this.messageQueue.addHandler(REPORT_MERCHANT_REQUESTED, this::handleMerchantReportRequest);
 		this.messageQueue.addHandler(REPORT_MANAGER_REQUESTED, this::handleManagerReportRequest);
-		this.messageQueue.addHandler(REST_STATUS_REQUESTED, this::handleReportStatusRequest);
+		this.messageQueue.addHandler(REPORT_STATUS_REQUESTED, this::handleReportStatusRequest);
 	}
 
 	public void handleLogPaymentRequest(Event incommingEvent) {
@@ -84,7 +84,7 @@ public class ReportEventHandler {
 		var sessionId = eventArguments.getSessionId();
 		
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, "Report service ready");
-		Event outgoingEvent = new Event(REST_STATUS_RESPONDED + sessionId, new Object[] {eventResponse});
+		Event outgoingEvent = new Event(REPORT_STATUS_RESPONDED + sessionId, new Object[] {eventResponse});
 		messageQueue.publish(outgoingEvent);
 	}
 }
