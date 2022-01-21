@@ -9,6 +9,8 @@ import messaging.MessageQueue;
 import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.*;
 import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.PUBLISH.*;
 
+import java.util.ArrayList;
+
 public class ReportEventHandler {
 	private MessageQueue messageQueue;
 	private ReportService reportService;
@@ -31,17 +33,21 @@ public class ReportEventHandler {
 	
 	public void handleCustomerReportRequest(Event incommingEvent) {
 		EventResponse eventArguments = incommingEvent.getArgument(0, EventResponse.class);
-		var sessionId = eventArguments.getSessionId();
-		var customerId = eventArguments.getArgument(0, String.class);
+		String sessionId = eventArguments.getSessionId();
+		String customerId = eventArguments.getArgument(0, String.class);
+		System.out.println("Handling customer report request for id: " + customerId);
 		
-		var report = reportService.getCustomerReport(customerId);
+		ArrayList<Payment> report = reportService.getCustomerReport(customerId);
+		System.out.println("Report: " + report);
 		boolean validRequest = report != null;
 		EventResponse eventResponse;
 		if(validRequest) {
+			System.out.println("Valid request");
 			eventResponse = new EventResponse(sessionId, validRequest, null, report);
 		}
 		else {
 			String errorMsg = "There are no logged payments for user: " + customerId;
+			System.out.println("Invalid request. " + errorMsg);
 			eventResponse = new EventResponse(sessionId, validRequest, errorMsg);
 		}
 		Event outgoingEvent = new Event(REPORT_CUSTOMER_RESPONDED + sessionId, new Object[] { eventResponse });

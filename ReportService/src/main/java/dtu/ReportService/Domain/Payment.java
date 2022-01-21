@@ -1,6 +1,40 @@
 package dtu.ReportService.Domain;
 public class Payment {
 	
+	private String customerId;
+	private String merchantId;
+	private String token;
+	private String amount;
+
+	public Payment(String customerId, String merchantId, String token, String amount) {
+		this.customerId = customerId;
+		this.merchantId = merchantId;
+		this.token = token;
+		this.amount = amount;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public String getMerchantId() {
+		return merchantId;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public String getAmount() {
+		return amount;
+	}
+	
+	@Override
+	public String toString() {
+		return "Payment [customerId=" + customerId + ", merchantId=" + merchantId + ", token=" + token + ", amount="
+				+ amount + "]";
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -42,33 +76,5 @@ public class Payment {
 		} else if (!token.equals(other.token))
 			return false;
 		return true;
-	}
-
-	private String customerId;
-	private String merchantId;
-	private String token;
-	private String amount;
-
-	public Payment(String customerId, String merchantId, String token, String amount) {
-		this.customerId = customerId;
-		this.merchantId = merchantId;
-		this.token = token;
-		this.amount = amount;
-	}
-
-	public String getCustomerId() {
-		return customerId;
-	}
-
-	public String getMerchantId() {
-		return merchantId;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public String getAmount() {
-		return amount;
 	}
 }
